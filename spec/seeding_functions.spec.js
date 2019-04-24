@@ -1,5 +1,5 @@
 const { expect } = require('chai')
-const { formatDate, createRef, dataFormatter, renameKeys } = require("../utils/seeding_functions");
+const { formatDate, createRef, formatArticleID, renameKeys } = require("../utils/seeding_functions");
 
 describe('formatDate()', () => {
     it('should always return new array when passed an array', () => {
@@ -130,10 +130,10 @@ describe("createRef()", () => {
     });
 })
 
-describe('dataFormatter()', () => {
+describe('formatArticleID()', () => {
     it('should always return new array when passed an array', () => {
         const input = []
-        const actual = dataFormatter(input)
+        const actual = formatArticleID(input)
         const output = []
         expect(actual).to.eql(output)
         expect(actual).to.not.equal(input)
@@ -146,7 +146,7 @@ describe('dataFormatter()', () => {
             votes: -1
         }]
         const refObj = { 'The People Tracking Every Touch, Pass And Tackle in the World Cup': 18 }
-        const actual = dataFormatter(inputDataArray, refObj)
+        const actual = formatArticleID(inputDataArray, refObj)
         const expected = [{
             body: 'Itaque quisquam est similique et est perspiciatis reprehenderit voluptatem autem.',
             belongs_to: 'The People Tracking Every Touch, Pass And Tackle in the World Cup',
@@ -173,7 +173,7 @@ describe('dataFormatter()', () => {
             'The People Tracking Every Touch, Pass And Tackle in the World Cup': 18,
             'Making sense of Redux': 4
         }
-        const actual = dataFormatter(inputDataArray, refObj)
+        const actual = formatArticleID(inputDataArray, refObj)
         const expected = [{
             body: 'Itaque quisquam est similique et est perspiciatis reprehenderit voluptatem autem.',
             belongs_to: 'The People Tracking Every Touch, Pass And Tackle in the World Cup',

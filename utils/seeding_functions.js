@@ -31,7 +31,7 @@ const createRef = (arrayOfData, desiredKey, desiredValue) => {
     return referenceObject
 };
 
-const dataFormatter = (rawData, referenceObject) => {
+const formatArticleID = (rawData, referenceObject) => {
     if (rawData.length === 0) return []
 
     const result = rawData.map(data => {
@@ -64,4 +64,4 @@ const renameKeys = (arr, keyToChange, newKey) => {
     return result
 };
 
-module.exports = { formatDate, createRef, dataFormatter, renameKeys }
+module.exports = { formatDate, createRef, formatArticleID, renameKeys }
