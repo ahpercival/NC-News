@@ -1,5 +1,5 @@
 const { expect } = require('chai')
-const { formatDate } = require("../utils/seeding_functions");
+const { formatDate, createRef } = require("../utils/seeding_functions");
 
 describe('formatDate()', () => {
     it('should always return new array when passed an array', () => {
@@ -93,3 +93,39 @@ describe('formatDate()', () => {
     });
 })
 
+describe.only("createRef()", () => {
+    it("returns an empty object, when passed an empty array", () => {
+        const input = [];
+        const actual = createRef(input);
+        const expected = {};
+        expect(actual).to.eql(expected);
+    });
+    it("should return a key value pair from arr items, when passed array with objects", () => {
+        const input = [{ article_id: 1, title: 'Running a Node App' }];
+        const actual = createRef(input);
+        const expected = { 1: 'Running a Node App' };
+        expect(actual).to.eql(expected);
+    });
+    it("should create a reference object, when passed array with multiple objects", () => {
+        const input = [
+            { article_id: 1, title: 'Running a Node App' },
+            { article_id: 2, title: 'The Rise Of Thinking Machines' },
+            { article_id: 3, title: '22 Amazing open source React projects' }
+        ];
+        const actual = createRef(input);
+        const expected = {
+            1: 'Running a Node App',
+            2: 'The Rise Of Thinking Machines',
+            3: '22 Amazing open source React projects'
+        };
+        expect(actual).to.eql(expected);
+    });
+    it("should create key value-pairs based on strings passed in parameters", () => {
+        const input = [
+            { article_id: 1, title: 'Running a Node App' }
+        ];
+        const actual = createRef(input, "title", "article_id");
+        const expected = { 'Running a Node App': 1 };
+        expect(actual).to.eql(expected);
+    });
+})

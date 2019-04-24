@@ -15,5 +15,23 @@ const formatDate = (array) => {
 
 }
 
+const createRef = (arrayOfData, desiredKey, desiredValue) => {
+    if (arrayOfData.length === 0) return {}
 
-module.exports = { formatDate } 
+    const referenceObject = arrayOfData.reduce((accumulator, inputObjects) => {
+        if (desiredKey === undefined && desiredValue === undefined) {
+            const values = Object.values(inputObjects)
+            accumulator[values[0]] = values[1]
+            return accumulator
+        } else {
+            accumulator[inputObjects[desiredKey]] = inputObjects[desiredValue]
+            return accumulator
+        }
+
+    }, {})
+
+    return referenceObject
+};
+
+
+module.exports = { formatDate, createRef }
