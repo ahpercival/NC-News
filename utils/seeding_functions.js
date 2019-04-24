@@ -27,11 +27,18 @@ const createRef = (arrayOfData, desiredKey, desiredValue) => {
             accumulator[inputObjects[desiredKey]] = inputObjects[desiredValue]
             return accumulator
         }
-
     }, {})
-
     return referenceObject
 };
 
+const dataFormatter = (rawData, referenceObject) => {
+    if (rawData.length === 0) return []
 
-module.exports = { formatDate, createRef }
+    const result = rawData.map(data => {
+        data.article_id = referenceObject[data.belongs_to]
+        return data
+    })
+    return result
+}
+
+module.exports = { formatDate, createRef, dataFormatter }

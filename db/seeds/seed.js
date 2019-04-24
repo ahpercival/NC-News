@@ -1,5 +1,5 @@
 const data = require('../data');
-const { formatDate, createRef } = require("../../utils/seeding_functions")
+const { formatDate, createRef, dataFormatter } = require("../../utils/seeding_functions")
 
 
 exports.seed = (knex, Promise) => {
@@ -21,15 +21,8 @@ exports.seed = (knex, Promise) => {
     }).then((articleRows) => {
       const { commentData } = data
       const amendedDate = formatDate(commentData)
-      console.log(createRef(articleRows, 'title', 'article_id'))
-
-      // format the comment data
-
-
-
-
-      amendedDate.forEach(object => { object.created_by })
-
+      const refObj = createRef(articleRows, 'title', 'article_id')
+      const formattedData = dataFormatter(amendedDate, refObj)
 
       return knex('comments')
         .insert()
