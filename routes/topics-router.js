@@ -1,8 +1,12 @@
 const topicsRouter = require("express").Router();
+const { getData } = require('../controller/topic-controller')
 
 
 topicsRouter
-    .route("/")
-    .get((req, res) => res.status(200).send({ msg: 'hello from Topic Router' }))
+    .route('/')
+    // .get((req, res) => res.send({ msg: 'hello from Topic Router' }))
+    .get((req, res) => {
+        res.send(getData())
+    });
 
 module.exports = topicsRouter

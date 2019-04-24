@@ -22,13 +22,18 @@ describe('/', () => {
         });
     });
 
-    describe.only('GET /api/topics', () => {
+    describe('GET /api/topics', () => {
       it('GET - Status 200', () => {
+        const response = [
+          { description: 'The man, the Mitch, the legend', slug: 'mitch' },
+          { description: 'Not dogs', slug: 'cats' },
+          { description: 'what books are made of', slug: 'paper' }
+        ]
         return request
           .get('/api/topics')
           .expect(200)
           .then(({ body }) => {
-            expect(body.msg).to.equal('hello from Topic Router');
+            expect(body).to.eql(response);
           });
       });
     });

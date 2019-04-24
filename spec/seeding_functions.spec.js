@@ -130,7 +130,7 @@ describe("createRef()", () => {
     });
 })
 
-describe('formatArticleID()', () => { //TEST NEEDS ADDING FOR DELETE belongs_to KEY
+describe('formatArticleID()', () => {
     it('should always return new array when passed an array', () => {
         const input = []
         const actual = formatArticleID(input)
@@ -138,6 +138,25 @@ describe('formatArticleID()', () => { //TEST NEEDS ADDING FOR DELETE belongs_to 
         expect(actual).to.eql(output)
         expect(actual).to.not.equal(input)
     });
+
+    it('should remove belongs_to from input object', () => {
+        const inputDataArray = [{
+            body: 'Itaque quisquam est similique et est perspiciatis reprehenderit voluptatem autem.',
+            belongs_to: 'The People Tracking Every Touch, Pass And Tackle in the World Cup',
+            created_by: 'tickle122',
+            votes: -1
+        }]
+        const refObj = { 'The People Tracking Every Touch, Pass And Tackle in the World Cup': 18 }
+        const actual = formatArticleID(inputDataArray, refObj)
+        const expected = [{
+            body: 'Itaque quisquam est similique et est perspiciatis reprehenderit voluptatem autem.',
+            created_by: 'tickle122',
+            votes: -1,
+            article_id: 18
+        }]
+        expect(actual).to.eql(expected)
+    });
+
     it('should add article_id to object when passed Reference Object', () => {
         const inputDataArray = [{
             body: 'Itaque quisquam est similique et est perspiciatis reprehenderit voluptatem autem.',
@@ -149,7 +168,6 @@ describe('formatArticleID()', () => { //TEST NEEDS ADDING FOR DELETE belongs_to 
         const actual = formatArticleID(inputDataArray, refObj)
         const expected = [{
             body: 'Itaque quisquam est similique et est perspiciatis reprehenderit voluptatem autem.',
-            belongs_to: 'The People Tracking Every Touch, Pass And Tackle in the World Cup',
             created_by: 'tickle122',
             votes: -1,
             article_id: 18
@@ -176,14 +194,12 @@ describe('formatArticleID()', () => { //TEST NEEDS ADDING FOR DELETE belongs_to 
         const actual = formatArticleID(inputDataArray, refObj)
         const expected = [{
             body: 'Itaque quisquam est similique et est perspiciatis reprehenderit voluptatem autem.',
-            belongs_to: 'The People Tracking Every Touch, Pass And Tackle in the World Cup',
             created_by: 'tickle122',
             votes: -1,
             article_id: 18
         },
         {
             body: 'Nobis consequatur animi. Ullam nobis quaerat voluptates veniam.',
-            belongs_to: 'Making sense of Redux',
             created_by: 'grumpy19',
             votes: 7,
             article_id: 4
@@ -194,39 +210,43 @@ describe('formatArticleID()', () => { //TEST NEEDS ADDING FOR DELETE belongs_to 
 
 describe("renameKeys", () => {
     it("returns a new empty array, when passed an empty array", () => {
-        const albums = [];
-        const keyToChange = "";
-        const newKey = "";
-        const actual = renameKeys(albums, keyToChange, newKey);
+        const inputArray = [];
+        const actual = renameKeys(inputArray);
         const expected = [];
         expect(actual).to.eql(expected);
-        expect(actual).to.not.equal(albums);
+        expect(actual).to.not.equal(inputArray);
     });
     it("should change the key name when passed a single item", () => {
-        const albums = [{ badFood: "Pizza" }];
-        const keyToChange = "badFood";
-        const newKey = "goodFood";
-        const actual = renameKeys(albums, keyToChange, newKey);
-        const expected = [{ goodFood: "Pizza" }];
+        const inputArray = [{ created_by: 'butter_bridge' }];
+        const keyToChange = "created_by";
+        const newKey = "author";
+        const actual = renameKeys(inputArray, keyToChange, newKey);
+        const expected = [{ author: 'butter_bridge' }];
         expect(actual).to.eql(expected);
-        expect(actual).to.not.equal(albums);
+        expect(actual).to.not.equal(inputArray);
     });
     it("should find the specific key in an array that requires updating, when object had multiple keys", () => {
-        const albums = [{ goodFood: "Pizza", badTopping: "Spinich & Mushroom" }];
-        const keyToChange = "badTopping";
-        const newKey = "goodTopping";
-        const actual = renameKeys(albums, keyToChange, newKey);
-        const expected = [{ goodFood: "Pizza", goodTopping: "Spinich & Mushroom" }];
+        const inputArray = [{
+            belongs_to: "They're not exactly dogs, are they?",
+            created_by: 'butter_bridge'
+        }];
+        const keyToChange = "created_by";
+        const newKey = "author";
+        const actual = renameKeys(inputArray, keyToChange, newKey);
+        const expected = [{
+            belongs_to: "They're not exactly dogs, are they?",
+            author: 'butter_bridge'
+        }];
         expect(actual).to.eql(expected);
-        expect(actual).to.not.equal(albums);
+        expect(actual).to.not.equal(inputArray);
     });
     it("should change the key name for multiple items in an array", () => {
-        const albums = [{ badFood: "Pizza" }, { badFood: "Ice Cream" }];
-        const keyToChange = "badFood";
-        const newKey = "goodFood";
-        const actual = renameKeys(albums, keyToChange, newKey);
-        const expected = [{ goodFood: "Pizza" }, { goodFood: "Ice Cream" }];
+        const inputArray = [{ created_by: "butter_bridge" }, { created_by: "icellusedkars" }];
+        const keyToChange = "created_by";
+        const newKey = "author";
+        const actual = renameKeys(inputArray, keyToChange, newKey);
+        const expected = [{ author: "butter_bridge" }, { author: "icellusedkars" }];
         expect(actual).to.eql(expected);
-        expect(actual).to.not.equal(albums);
+        expect(actual).to.not.equal(inputArray);
     });
 });

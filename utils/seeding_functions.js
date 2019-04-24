@@ -45,10 +45,8 @@ const formatArticleID = (rawData, referenceObject) => {
 const renameKeys = (arr, keyToChange, newKey) => {
     let result = []
     if (arr.length === 0) return result;
-    const eachArr = arr.forEach(obj => {
-
+    arr.forEach(obj => {
         let ents = Object.entries(obj)
-
         const updatedKey = ents.reduce((accumulator, pairs) => {
             if (pairs[0] === keyToChange) {
                 accumulator[newKey] = pairs[1]
@@ -57,10 +55,8 @@ const renameKeys = (arr, keyToChange, newKey) => {
             }
             return accumulator
         }, {})
-
         result.push(updatedKey)
     })
-
     return result
 };
 
