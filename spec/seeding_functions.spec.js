@@ -130,7 +130,7 @@ describe("createRef()", () => {
     });
 })
 
-describe('formatArticleID()', () => {
+describe('formatArticleID()', () => { //TEST NEEDS ADDING FOR DELETE belongs_to KEY
     it('should always return new array when passed an array', () => {
         const input = []
         const actual = formatArticleID(input)
@@ -192,7 +192,7 @@ describe('formatArticleID()', () => {
     });
 });
 
-describe.only("renameKeys", () => {
+describe("renameKeys", () => {
     it("returns a new empty array, when passed an empty array", () => {
         const albums = [];
         const keyToChange = "";

@@ -9,7 +9,7 @@ const connection = require('../db/connection');
 const request = supertest(app);
 
 describe('/', () => {
-  // beforeEach(() => connection.seed.run());
+  beforeEach(() => connection.seed.run());
   after(() => connection.destroy());
 
   describe('/api', () => {
@@ -21,5 +21,17 @@ describe('/', () => {
           expect(body.ok).to.equal(true);
         });
     });
+
+    describe.only('GET /api/topics', () => {
+      it('GET - Status 200', () => {
+        return request
+          .get('/api/topics')
+          .expect(200)
+          .then(({ body }) => {
+            expect(body.msg).to.equal('hello from Topic Router');
+          });
+      });
+    });
+
   });
 });
