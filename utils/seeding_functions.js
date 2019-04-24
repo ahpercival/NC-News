@@ -36,9 +36,32 @@ const dataFormatter = (rawData, referenceObject) => {
 
     const result = rawData.map(data => {
         data.article_id = referenceObject[data.belongs_to]
+        delete data.belongs_to
         return data
     })
     return result
 }
 
-module.exports = { formatDate, createRef, dataFormatter }
+const renameKeys = (arr, keyToChange, newKey) => {
+    let result = []
+    if (arr.length === 0) return result;
+    const eachArr = arr.forEach(obj => {
+
+        let ents = Object.entries(obj)
+
+        const updatedKey = ents.reduce((accumulator, pairs) => {
+            if (pairs[0] === keyToChange) {
+                accumulator[newKey] = pairs[1]
+            } else {
+                accumulator[pairs[0]] = pairs[1]
+            }
+            return accumulator
+        }, {})
+
+        result.push(updatedKey)
+    })
+
+    return result
+};
+
+module.exports = { formatDate, createRef, dataFormatter, renameKeys }
