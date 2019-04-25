@@ -1,9 +1,13 @@
-const topicData = require('../db/data/test-data/topics')
+const { fetchTopicData } = require('../models/topic-model')
 
-const getData = () => {
-    return topicData
+const getTopicData = (req, res, next) => {
+    fetchTopicData()
+        .then(topics => {
+            return res.status(200).send({ topics });
+        })
+        .catch(next);
 }
 
 module.exports = {
-    getData
+    getTopicData
 }

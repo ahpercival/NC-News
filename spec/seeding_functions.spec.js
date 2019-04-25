@@ -208,7 +208,7 @@ describe('formatArticleID()', () => {
     });
 });
 
-describe("renameKeys", () => {
+describe("renameKeys()", () => {
     it("returns a new empty array, when passed an empty array", () => {
         const inputArray = [];
         const actual = renameKeys(inputArray);

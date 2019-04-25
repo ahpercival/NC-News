@@ -8,7 +8,7 @@ const connection = require('../db/connection');
 
 const request = supertest(app);
 
-describe('/', () => {
+describe.only('/', () => {
   beforeEach(() => connection.seed.run());
   after(() => connection.destroy());
 
@@ -24,11 +24,13 @@ describe('/', () => {
 
     describe('GET /api/topics', () => {
       it('GET - Status 200', () => {
-        const response = [
-          { description: 'The man, the Mitch, the legend', slug: 'mitch' },
-          { description: 'Not dogs', slug: 'cats' },
-          { description: 'what books are made of', slug: 'paper' }
-        ]
+        const response = {
+          topics: [
+            { description: 'The man, the Mitch, the legend', slug: 'mitch' },
+            { description: 'Not dogs', slug: 'cats' },
+            { description: 'what books are made of', slug: 'paper' }
+          ]
+        }
         return request
           .get('/api/topics')
           .expect(200)
