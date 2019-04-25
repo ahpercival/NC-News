@@ -71,13 +71,13 @@ describe.only('/', () => {
       });
     });
 
-    describe('GET /api/articles/sort_by=author', () => {
+    describe('GET /api/articles/?sort_by=author', () => {
       it('GET - Status 200 - sorts the articles by any valid column (defaults to date)', () => {
         return request
           .get('/api/articles/?sort_by=author')
           .expect(200)
           .then(({ body }) => {
-            expect(body.articles).to.be.sortedBy('author')
+            expect(body.articles).to.be.descendingBy('author')
           });
       });
     });
@@ -88,7 +88,7 @@ describe.only('/', () => {
           .get('/api/articles/?order_by=desc')
           .expect(200)
           .then(({ body }) => {
-            expect(body.articles[0].article_id).to.eql(1)
+            expect(body.articles).to.be.descendingBy('created_at')
           });
       });
     });
