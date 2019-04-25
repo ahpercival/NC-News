@@ -11,7 +11,7 @@ chai.use(chaiSorted);
 
 const request = supertest(app);
 
-describe.only('/', () => {
+describe('/', () => {
   beforeEach(() => connection.seed.run());
   after(() => connection.destroy());
 
@@ -92,6 +92,43 @@ describe.only('/', () => {
           });
       });
     });
+    describe('GET - Status 400 Bad Request - /api/articles/?order_by=a', () => {
+      it('should return 400 with message', () => {
+        return request
+          .get('/api/articles/?order_by=a')
+          .expect(400)
+          .then(({ body }) => {
+            expect(body.msg).to.eql('Incorrect order_by - please use asc or desc')
+          });
+      });
+    });
 
+    describe('GET - Status 200 - ', () => {
+
+    });
+
+
+  });
+});
+
+describe('The articles endpoint', () => {
+
+  describe('articles query by articleId', () => {
+    it.only('should return a status 200 with an article', () => {
+      return request
+        .get('/api/articles/1')
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.article[0].title).to.eql('Living in the shadow of a great man')
+        });
+    });
+    xit('should return a status 400 with error msg', () => {
+      return request
+        .get('/api/articles/?order_by=a')
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).to.eql('Incorrect order_by - please use asc or desc')
+        });
+    });
   });
 });

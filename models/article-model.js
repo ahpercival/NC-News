@@ -14,3 +14,15 @@ exports.fetchArticleData = ({ author, topic, sort_by = 'articles.created_at', or
         })
         .orderBy(sort_by, order_by);
 };
+
+
+exports.fetchArticleByID = (article_id) => {
+
+    return connection('articles')
+        .where('articles.article_id', '=', article_id)
+        .select('articles.*')
+        .count({ comment_count: 'comments.article_id' })
+        .leftJoin('comments', 'comments.article_id', '=', 'articles.article_id')
+        .groupBy('articles.article_id')
+
+};
