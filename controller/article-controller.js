@@ -15,12 +15,24 @@ const getArticleData = (req, res, next) => {
 
 }
 
-
 const getArticleByID = (req, res, next) => {
+
+    if (!!req.params.article_id.match(/([A-Za-z])/)) {
+        return next({ code: '4002' })
+    }
+
     fetchArticleByID(req.params.article_id).then(article => {
+
+        if (article.length === 0) {
+            return Promise.reject({
+                status: 404,
+                msg: 'No article found'
+            })
+        }
         return res.status(200).send({ article })
+
     })
-        .catch(next)
+        .catch(err => { console.log(err) })
 }
 
 module.exports = {

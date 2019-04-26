@@ -12,7 +12,7 @@ app.all('/*', routeNotFound);
 
 app.use(handle400)
 
-// app.use(handle500);
+app.use(handle500);
 
 
 module.exports = app;

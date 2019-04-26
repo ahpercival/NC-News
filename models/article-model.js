@@ -17,7 +17,6 @@ exports.fetchArticleData = ({ author, topic, sort_by = 'articles.created_at', or
 
 
 exports.fetchArticleByID = (article_id) => {
-
     return connection('articles')
         .where('articles.article_id', '=', article_id)
         .select('articles.*')
