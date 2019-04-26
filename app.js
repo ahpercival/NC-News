@@ -11,7 +11,8 @@ app.use('/api', apiRouter);
 app.all('/*', routeNotFound);
 
 app.use(handle400)
-
+// handleCustomErrors (if err.status)
+// handlePsqlErrors (check err.code to find out what to do)
 app.use(handle500);
 
 
