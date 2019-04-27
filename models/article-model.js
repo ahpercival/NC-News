@@ -32,4 +32,6 @@ exports.updateArticleVote = (articleToUpdate, voteIncrementBy) => {
         .increment('votes', voteIncrementBy.inc_votes)
         .returning('*')
         .then(([result]) => result)
+    //IS NOT RETURNING COMMENT COUNT
+
 }

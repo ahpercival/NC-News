@@ -15,61 +15,54 @@ describe.only('/', () => {
   beforeEach(() => connection.seed.run());
   after(() => connection.destroy());
 
-  describe('The API endpoint', () => {
-
-    describe('GET - /api', () => {
-
+  describe('The API endpoint - /api', () => {
+    describe('GET Request', () => {
       describe('Status 200 - OK', () => {
-        describe('/', () => {
-          it('Responds true when reaching correct endpoint', () => {
-            return request
-              .get('/api')
-              .expect(200)
-              .then(({ body }) => {
-                expect(body.ok).to.equal(true);
-              });
-          });
+        it('/ - Responds true when reaching correct endpoint', () => {
+          return request
+            .get('/api')
+            .expect(200)
+            .then(({ body }) => {
+              expect(body.ok).to.equal(true);
+            });
         });
       });
 
       describe('Status 404 - Not Found', () => {
-        describe('/:invalid_route', () => {
-          it('should return a Status 404 - Not Found with error msg if route is invalid', () => {
+        it('/ - should return a Status 404 - Not Found with error msg if route is invalid', () => {
+          return request
+            .get('/api/topic')
+            .expect(404)
+            .then(({ body }) => {
+              expect(body.msg).to.eql('Route Not Found')
+            });
+        });
+      });
+    });
+
+    describe('The topics endpoint - /api/topics', () => {
+      describe('GET Request', () => {
+        describe('Status 200 - OK', () => {
+          it('/ - Responds with an array of topic objects', () => {
             return request
-              .get('/api/topic')
-              .expect(404)
+              .get('/api/topics')
+              .expect(200)
               .then(({ body }) => {
-                expect(body.msg).to.eql('Route Not Found')
+                expect(body.topics).to.be.an("array")
+                expect(body.topics[0]).to.contain.keys('description', 'slug')
               });
           });
         });
       });
+
     });
 
-    describe('The topics endpoint', () => {
-      describe('GET - /api/topics', () => {
-        describe('Status 200 - OK', () => {
-          describe('/', () => {
-            it('Responds with an array of topic objects', () => {
-              return request
-                .get('/api/topics')
-                .expect(200)
-                .then(({ body }) => {
-                  expect(body.topics).to.be.an("array")
-                  expect(body.topics[0]).to.contain.keys('description', 'slug')
-                });
-            });
-          });
-        });
-      });
-    });
+    describe('The articles endpoint - /api/articles', () => {
 
-    describe('The articles endpoint', () => {
-
-      describe('GET - /api/articles', () => {
-        describe('Status 200 - OK', () => {
-          describe('/', () => {
-            it('Responds with an array of article objects', () => {
+      describe('/', () => {
+        describe('GET Request', () => {
+          describe('Status 200 - OK', () => {
+            it(' / - Responds with an array of article objects', () => {
               return request
                 .get('/api/articles')
                 .expect(200)
@@ -78,9 +71,14 @@ describe.only('/', () => {
                   expect(body.articles[0]).to.contain.keys('author', 'title', 'article_id', 'topic', 'created_at', 'votes', 'comment_count')
                 });
             });
-          });
-          describe('/?author=', () => {
-            it('filters the articles by the username value', () => {
+          })
+        })
+      })
+
+      describe('/?', () => {
+        describe('GET Request', () => {
+          describe('Status 200 - OK', () => {
+            it('/?author= - filters the articles by the username value', () => {
               return request
                 .get('/api/articles/?author=rogersop')
                 .expect(200)
@@ -88,9 +86,8 @@ describe.only('/', () => {
                   expect(body.articles[0].author).to.eql('rogersop')
                 });
             });
-          });
-          describe('/?topic=', () => {
-            it('filters the articles by the topic value if passed valid topic', () => {
+
+            it('/?topic= - filters the articles by the topic value if passed valid topic', () => {
               return request
                 .get('/api/articles/?topic=cats')
                 .expect(200)
@@ -98,9 +95,8 @@ describe.only('/', () => {
                   expect(body.articles[0].topic).to.eql('cats')
                 });
             });
-          });
-          describe('/?sort_by=', () => {
-            it('sorts the articles by column when passed any valid column (defaults to date)', () => {
+
+            it('/?sort_by= - sorts the articles by column when passed any valid column (defaults to date)', () => {
               return request
                 .get('/api/articles/?sort_by=author')
                 .expect(200)
@@ -108,9 +104,8 @@ describe.only('/', () => {
                   expect(body.articles).to.be.descendingBy('author')
                 });
             });
-          });
-          describe('/?order_by=', () => {
-            it('orders articles in descending order by default', () => {
+
+            it('/?order_by= - orders articles in descending order by default', () => {
               return request
                 .get('/api/articles/?order_by=desc')
                 .expect(200)
@@ -119,28 +114,57 @@ describe.only('/', () => {
                 });
             });
 
-
           });
-        });
 
-        describe('Status 400 - Bad Request', () => {
-          describe('/?order_by=:invalid_query', () => {
-            it('should return 400 with message when passed invalid order_by query', () => {
+          describe('Status 400 - Bad Request', () => {
+
+            xit('/?sort_by= - should return 400 with message when passed invalid order_by query', () => {
+              return request
+                .get('/api/articles/?sort_by=a')
+                .expect(400)
+                .then(({ body }) => {
+                  expect(body.msg).to.eql('Invalid field - unable to sort articles requested order')
+                });
+            });
+
+            it('/?order_by= - should return 400 with message when passed invalid order_by query', () => {
               return request
                 .get('/api/articles/?order_by=a')
                 .expect(400)
                 .then(({ body }) => {
-                  expect(body.msg).to.eql('Incorrect order_by - please use asc or desc')
+                  expect(body.msg).to.eql('Invalid Request - please order_by asc or desc')
                 });
             });
+
+          });
+
+          describe('Status 404 - Not Found', () => {
+            it('/?author= - should return 404 with message when passed invalid author query', () => {
+              return request
+                .get('/api/articles/?author=a')
+                .expect(404)
+                .then(({ body }) => {
+                  expect(body.msg).to.eql('No articles found by that author')
+                });
+            });
+
+            it('/?topic= - should return 404 with message when passed invalid topic query', () => {
+              return request
+                .get('/api/articles/?topic=a')
+                .expect(404)
+                .then(({ body }) => {
+                  expect(body.msg).to.eql('No articles found relating to that topic')
+                });
+            });
+
           });
         });
       });
 
-      describe('GET - /api/articles/:article_id', () => {
-        describe('Status 200 - OK', () => {
-          describe('/:article_id', () => {
-            it('should return a Status 200 - OK with an article when passed valid article id', () => {
+      describe('/:article_id', () => {
+        describe('GET Request', () => {
+          describe('Status 200 - OK', () => {
+            it('/:article_id - should return a Status 200 - OK with an article when passed valid article id', () => {
               return request
                 .get('/api/articles/1')
                 .expect(200)
@@ -149,11 +173,10 @@ describe.only('/', () => {
                 });
             });
           });
-        });
 
-        describe('Status 400 - Bad Request', () => {
-          describe('/:invalid_articleID', () => {
-            it('should return a Status 400 - Bad Request with error msg when passed invalid article_id', () => {
+
+          describe('Status 400 - Bad Request', () => {
+            it('/:articleID - should return a Status 400 - Bad Request with error msg when passed invalid article_id', () => {
               return request
                 .get('/api/articles/a')
                 .expect(400)
@@ -161,13 +184,11 @@ describe.only('/', () => {
                   expect(body.msg).to.eql('Invalid article ID')
                 });
             });
-
           });
-        });
 
-        describe('Status 404 - Not Found', () => {
-          describe('/:article_id', () => {
-            it('should return a Status 404 - Not Found with error msg if article does not exist', () => {
+          describe('Status 404 - Not Found', () => {
+
+            it('/:article_id - should return a Status 404 - Not Found with error msg if article does not exist', () => {
               return request
                 .get('/api/articles/500000')
                 .expect(404)
@@ -175,15 +196,28 @@ describe.only('/', () => {
                   expect(body.msg).to.eql('No article found')
                 });
             });
+
           });
         });
-      });
 
-      describe('PATCH - /api/articles/:article_id', () => {
-        describe('Status 200 - OK', () => {
-          describe('/:article_id', () => {
-            it('Request body accepts an object', () => {
-              const vote = { inc_votes: 1 }
+        describe('PATCH Request', () => {
+          describe('Status 200 - OK', () => {
+            xit('/:article_id - Responds with the updated article', () => {
+              const newVote = 0
+              const vote = { inc_votes: newVote }
+              return request
+                .patch('/api/articles/1')
+                .send(vote)
+                .expect(200)
+                .then(({ body }) => {
+                  expect(body.article.votes).to.eql(100)
+                  expect(body.article).to.contain.keys('author', 'title', 'article_id', 'body', 'topic', 'created_at', 'votes', 'comment_count')
+                })
+            });
+
+            it('/:article_id - Will increment article vote by one (as specified by request object)', () => {
+              const newVote = 1
+              const vote = { inc_votes: newVote }
               return request
                 .patch('/api/articles/1')
                 .send(vote)
@@ -192,13 +226,38 @@ describe.only('/', () => {
                   expect(body.article.votes).to.eql(101)
                 })
             });
+            it('/:article_id - Will decrement article vote by ninty-nine (as specified by request object)', () => {
+              const newVote = -99
+              const vote = { inc_votes: newVote }
+              return request
+                .patch('/api/articles/1')
+                .send(vote)
+                .expect(200)
+                .then(({ body }) => {
+                  expect(body.article.votes).to.eql(1)
+                })
+            });
           });
+        });
+      });
 
+      xdescribe('/:article_id/comments', () => {
+        describe('GET Request', () => {
+          describe('Status 200 - OK', () => {
+            it('/ - Responds with an array of comments for the given article ID', () => {
+              return request
+                .get('/api/articles/1/comments')
+                .expect(200)
+                .then(({ body }) => {
+                  expect(body.article.comments).to.contain.keys('comment_id', 'votes', 'created_at', 'author', 'body')
+                });
+            })
+
+          });
         });
       });
 
     });
-
   });
 });
 
