@@ -22,17 +22,16 @@ const getArticleByID = (req, res, next) => {
 
     fetchArticleByID(req.params.article_id).then(article => {
         if (article.length === 0) {
-            return Promise.reject({ status: 404, msg: 'jfbdjdhbs' })
+            return Promise.reject({ code: '4041' })
         }
         return res.status(200).send({ article })
-
     })
         .catch(next)
+
 }
 
 const patchArticleVote = (req, res, next) => {
     updateArticleVote(req.params, req.body).then(article => {
-        console.log(article)
         res.status(200).send({ article });
     })
         .catch(err => { console.log(err) })
