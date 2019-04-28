@@ -14,7 +14,6 @@ const getArticleData = (req, res, next) => {
             return res.status(200).send({ articles })
         })
         .catch(next)
-
 }
 
 const getArticleByID = (req, res, next) => {
@@ -37,7 +36,7 @@ const patchArticleVote = (req, res, next) => {
     updateArticleVote(req.params, req.body).then(article => {
         res.status(200).send({ article });
     })
-        .catch(err => { console.log(err) })
+        .catch(next)
 }
 
 

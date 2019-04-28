@@ -1,7 +1,6 @@
 const connection = require("../db/connection");
 
 exports.fetchArticleData = ({ author, topic, sort_by = 'articles.created_at', order_by = 'desc' }) => {
-
     return connection
         .select('articles.*')
         .from('articles')

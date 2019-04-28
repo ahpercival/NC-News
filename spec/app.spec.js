@@ -11,11 +11,11 @@ chai.use(chaiSorted);
 
 const request = supertest(app);
 
-describe.only('/', () => {
+describe.only('The API endpoint - /api', () => {
   beforeEach(() => connection.seed.run());
   after(() => connection.destroy());
 
-  describe('The API endpoint - /api', () => {
+  describe('/', () => {
     describe('GET Request', () => {
       describe('Status 200 - OK', () => {
         it('/ - Responds true when reaching correct endpoint', () => {
@@ -41,24 +41,24 @@ describe.only('/', () => {
     });
 
     describe('The topics endpoint - /api/topics', () => {
-      describe('GET Request', () => {
-        describe('Status 200 - OK', () => {
-          it('/ - Responds with an array of topic objects', () => {
-            return request
-              .get('/api/topics')
-              .expect(200)
-              .then(({ body }) => {
-                expect(body.topics).to.be.an("array")
-                expect(body.topics[0]).to.contain.keys('description', 'slug')
-              });
+      describe('/', () => {
+        describe('GET Request', () => {
+          describe('Status 200 - OK', () => {
+            it('/ - Responds with an array of topic objects', () => {
+              return request
+                .get('/api/topics')
+                .expect(200)
+                .then(({ body }) => {
+                  expect(body.topics).to.be.an("array")
+                  expect(body.topics[0]).to.contain.keys('description', 'slug')
+                });
+            });
           });
         });
       });
-
     });
 
     describe('The articles endpoint - /api/articles', () => {
-
       describe('/', () => {
         describe('GET Request', () => {
           describe('Status 200 - OK', () => {
@@ -139,13 +139,12 @@ describe.only('/', () => {
 
           describe('Status 400 - Bad Request', () => {
 
-            xit('/?sort_by= - should return 400 with message when passed invalid sort_by query', () => {
-              //REJECT THE PROMISE IN THE ARTICLE-MODEL
+            it('/?sort_by= - should return 400 with message when passed invalid sort_by query', () => {
               return request
                 .get('/api/articles/?sort_by=a')
                 .expect(400)
                 .then(({ body }) => {
-                  expect(body.msg).to.eql('Invalid field - unable to sort articles requested order')
+                  expect(body.msg).to.eql('Unable to sort by undefined column')
                 });
             });
 

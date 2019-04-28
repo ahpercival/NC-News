@@ -9,7 +9,6 @@ exports.methodNotAllowed = (req, res) => {
 };
 
 exports.handleCustomErrors = (err, req, res, next) => {
-
   if (errorMSG[404][err.code]) {
     res.status(404).send({ msg: errorMSG[404][err.code] });
   }
@@ -22,6 +21,15 @@ exports.handleCustomErrors = (err, req, res, next) => {
     next(err);
   }
 
+}
+
+exports.handlePsqlErrors = (err, req, res, next) => {
+  if (errorMSG.PSQL[err.code]) {
+    res.status(400).send({ msg: errorMSG.PSQL[err.code] });
+  }
+  else {
+    next(err);
+  }
 }
 
 exports.handle500 = (err, req, res, next) => {

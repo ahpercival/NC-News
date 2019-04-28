@@ -11,5 +11,7 @@ module.exports = {
         4043: 'No articles found relating to that topic'
     },
 
-    PSQL: {}
+    PSQL: {
+        42703: 'Unable to sort by undefined column'
+    }
 }
