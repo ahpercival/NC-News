@@ -1,4 +1,4 @@
-const { fetchArticleData, fetchArticleByID, updateArticleVote } = require('../models/article-model')
+const { fetchArticleData, fetchArticleByID, updateArticleVote, fetchArticleComments } = require('../models/article-model')
 
 const getArticleData = (req, res, next) => {
     const order = ['asc', 'desc']
@@ -39,11 +39,19 @@ const patchArticleVote = (req, res, next) => {
         .catch(next)
 }
 
-
+const getArticleComments = (req, res, next) => {
+    fetchArticleComments(req.params)
+        .then(comments => {
+            console.log(comments)
+            res.status(200).send({ comments });
+        })
+        .catch(next)
+}
 
 
 module.exports = {
     getArticleData,
     getArticleByID,
     patchArticleVote,
+    getArticleComments
 }

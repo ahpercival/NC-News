@@ -34,3 +34,11 @@ exports.updateArticleVote = (articleToUpdate, voteIncrementBy) => {
     //IS NOT RETURNING COMMENT COUNT
 
 }
+
+exports.fetchArticleComments = (articleID) => {
+    return connection('comments')
+        .select('comments.comment_id', 'comments.votes', 'comments.created_at', 'comments.author', 'comments.body')
+        .from('comments')
+        .where('comments.article_id', '=', articleID.article_id)
+    //TypeError: Cannot read property 'comments' of undefined
+}
