@@ -62,7 +62,7 @@ describe.only('/', () => {
       describe('/', () => {
         describe('GET Request', () => {
           describe('Status 200 - OK', () => {
-            it(' / - Responds with an array of article objects', () => {
+            it(' / - Responds with an array of article objects with correct keys', () => {
               return request
                 .get('/api/articles')
                 .expect(200)
@@ -71,6 +71,18 @@ describe.only('/', () => {
                   expect(body.articles[0]).to.contain.keys('author', 'title', 'article_id', 'topic', 'created_at', 'votes', 'comment_count')
                 });
             });
+
+            it(' / - Should be ordered by descending date order as default', () => {
+              return request
+                .get('/api/articles')
+                .expect(200)
+                .then(({ body }) => {
+                  expect(body.articles).to.be.an("array")
+                  expect(body.articles[0]).to.contain.keys('author', 'title', 'article_id', 'topic', 'created_at', 'votes', 'comment_count')
+                  expect(body.articles).to.be.descendingBy('created_at')
+                });
+            });
+
           })
         })
       })
@@ -105,7 +117,7 @@ describe.only('/', () => {
                 });
             });
 
-            it('/?order_by= - orders articles in descending order by default', () => {
+            it('/?order_by= - orders articles in descending order', () => {
               return request
                 .get('/api/articles/?order_by=desc')
                 .expect(200)
@@ -114,11 +126,21 @@ describe.only('/', () => {
                 });
             });
 
+            it('/?order_by= - orders articles in ascending order', () => {
+              return request
+                .get('/api/articles/?order_by=asc')
+                .expect(200)
+                .then(({ body }) => {
+                  expect(body.articles).to.be.ascendingBy('created_at')
+                });
+            });
+
           });
 
           describe('Status 400 - Bad Request', () => {
 
-            xit('/?sort_by= - should return 400 with message when passed invalid order_by query', () => {
+            xit('/?sort_by= - should return 400 with message when passed invalid sort_by query', () => {
+              //REJECT THE PROMISE IN THE ARTICLE-MODEL
               return request
                 .get('/api/articles/?sort_by=a')
                 .expect(400)
