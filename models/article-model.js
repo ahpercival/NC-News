@@ -31,14 +31,28 @@ exports.updateArticleVote = (articleToUpdate, voteIncrementBy) => {
         .increment('votes', voteIncrementBy.inc_votes)
         .returning('*')
         .then(([result]) => result)
-    //IS NOT RETURNING COMMENT COUNT
-
 }
 
-exports.fetchArticleComments = (articleID) => {
-    return connection('comments')
+exports.fetchArticleComments = ({ article_id }, { sort_by = 'comments.created_at', order_by = 'desc' }) => {
+
+    return connection
         .select('comments.comment_id', 'comments.votes', 'comments.created_at', 'comments.author', 'comments.body')
         .from('comments')
-        .where('comments.article_id', '=', articleID.article_id)
-    //TypeError: Cannot read property 'comments' of undefined
+        .where('comments.article_id', '=', article_id)
+        .orderBy(sort_by, order_by)
+}
+
+exports.addNewComment = ({ article_id }, { username, body }) => {
+    /*
+    console.log(article_id) // 1
+    console.log(username) // icellusedkars
+    console.log(body) // hello
+    
+    return a connection
+    select the comments table
+    insert username and body
+    return the new comment
+    
+    */
+
 }

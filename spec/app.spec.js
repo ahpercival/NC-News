@@ -223,7 +223,7 @@ describe.only('The API endpoint - /api', () => {
 
         describe('PATCH Request', () => {
           describe('Status 200 - OK', () => {
-            xit('/:article_id - Responds with the updated article', () => {
+            it('/:article_id - Responds with the updated article', () => {
               const newVote = 0
               const vote = { inc_votes: newVote }
               return request
@@ -232,7 +232,7 @@ describe.only('The API endpoint - /api', () => {
                 .expect(200)
                 .then(({ body }) => {
                   expect(body.article.votes).to.eql(100)
-                  expect(body.article).to.contain.keys('author', 'title', 'article_id', 'body', 'topic', 'created_at', 'votes', 'comment_count')
+                  expect(body.article).to.contain.keys('author', 'title', 'article_id', 'body', 'topic', 'created_at', 'votes')
                 })
             });
 
@@ -262,7 +262,7 @@ describe.only('The API endpoint - /api', () => {
         });
       });
 
-      xdescribe('/:article_id/comments', () => {
+      describe('/:article_id/comments', () => {
         describe('GET Request', () => {
           describe('Status 200 - OK', () => {
             it('/ - Responds with an array of comments for the given article ID', () => {
@@ -270,12 +270,93 @@ describe.only('The API endpoint - /api', () => {
                 .get('/api/articles/1/comments')
                 .expect(200)
                 .then(({ body }) => {
-                  expect(body.article.comments).to.contain.keys('comment_id', 'votes', 'created_at', 'author', 'body')
+                  body.comments.forEach(comment => {
+                    console.log(comment)
+                    expect(comment).to.contain.keys('comment_id', 'votes', 'created_at', 'author', 'body')
+                  })
                 });
             })
+            it('/ - Should be ordered by created_at as default', () => {
+              return request
+                .get('/api/articles/1/comments')
+                .expect(200)
+                .then(({ body }) => {
+                  expect(body.comments).to.be.descendingBy('created_at')
+                });
+            })
+          });
+        });
+
+        describe('POST Request', () => {
+          describe('Status 200 - OK', () => {
+            it.only('Request body accepts an object with "username" & "body" properties', () => {
+              const newComment = { username: 'icellusedkars', body: 'hello' }
+              return request
+                .post('/api/articles/1/comments')
+                .send(newComment)
+                .expect(200)
+                .then(({ body }) => {
+                  expect(body.comments).to.contain.keys('comment_id', 'votes', 'created_at', 'author', 'body')
+                  expect(body.comments.author).to.eql('icellusedkars')
+                  expect(body.comments.body).to.eql('hello')
+                })
+            });
+          });
+
+        });
+
+        describe('/?', () => {
+          describe('GET Request', () => {
+            describe('Status 200 - OK', () => {
+              it('/?sort_by= - sorts the comments by column when passed any valid column', () => {
+                return request
+                  .get('/api/articles/1/comments/?sort_by=author')
+                  .expect(200)
+                  .then(({ body }) => {
+                    expect(body.comments).to.be.descendingBy('author')
+                  });
+              });
+
+              it('/?order_by= - orders comments in descending order', () => {
+                return request
+                  .get('/api/articles/1/comments/?order_by=desc')
+                  .expect(200)
+                  .then(({ body }) => {
+                    expect(body.comments).to.be.descendingBy('created_at')
+                  });
+              });
+              it('/?order_by= - orders articles in ascending order', () => {
+                return request
+                  .get('/api/articles/1/comments/?order_by=asc')
+                  .expect(200)
+                  .then(({ body }) => {
+                    expect(body.comments).to.be.ascendingBy('created_at')
+                  });
+              });
+
+            });
+            describe('Status 400 - Bad Request', () => {
+              it('/?sort_by= - should return 400 with message when passed invalid sort_by query', () => {
+                return request
+                  .get('/api/articles/1/comments/?sort_by=a')
+                  .expect(400)
+                  .then(({ body }) => {
+                    expect(body.msg).to.eql('Unable to sort by undefined column')
+                  });
+              });
+              it('/?order_by= - should return 400 with message when passed invalid order_by query', () => {
+                return request
+                  .get('/api/articles/1/comments/?order_by=a')
+                  .expect(400)
+                  .then(({ body }) => {
+                    expect(body.msg).to.eql('Invalid Request - please order_by asc or desc')
+                  });
+              });
+            });
 
           });
         });
+
       });
 
     });

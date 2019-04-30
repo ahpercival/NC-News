@@ -1,4 +1,4 @@
-const { fetchArticleData, fetchArticleByID, updateArticleVote, fetchArticleComments } = require('../models/article-model')
+const { fetchArticleData, fetchArticleByID, updateArticleVote, fetchArticleComments, addNewComment } = require('../models/article-model')
 
 const getArticleData = (req, res, next) => {
     const order = ['asc', 'desc']
@@ -40,18 +40,27 @@ const patchArticleVote = (req, res, next) => {
 }
 
 const getArticleComments = (req, res, next) => {
-    fetchArticleComments(req.params)
+    const order = ['asc', 'desc']
+
+    if (req.query.hasOwnProperty('order_by') && !order.includes(req.query.order_by)) {
+        return next({ code: '4001' })
+    }
+    fetchArticleComments(req.params, req.query)
         .then(comments => {
-            console.log(comments)
             res.status(200).send({ comments });
         })
         .catch(next)
 }
 
 
+const postNewComment = (req, res, next) => {
+    addNewComment(req.params, req.body)
+}
+
 module.exports = {
     getArticleData,
     getArticleByID,
     patchArticleVote,
-    getArticleComments
+    getArticleComments,
+    postNewComment
 }
