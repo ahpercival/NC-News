@@ -54,7 +54,12 @@ const getArticleComments = (req, res, next) => {
 
 
 const postNewComment = (req, res, next) => {
+    if (req.body.body.length === 0) return next({ code: '4004' })
+    if (req.body.username.length === 0) return next({ code: '4005' })
     addNewComment(req.params, req.body)
+        .then(postedComment => {
+            res.status(200).send({ postedComment })
+        })
 }
 
 module.exports = {

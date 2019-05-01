@@ -16,8 +16,11 @@ describe.only('The API endpoint - /api', () => {
   after(() => connection.destroy());
 
   describe('/', () => {
+
     describe('GET Request', () => {
+
       describe('Status 200 - OK', () => {
+
         it('/ - Responds true when reaching correct endpoint', () => {
           return request
             .get('/api')
@@ -26,9 +29,11 @@ describe.only('The API endpoint - /api', () => {
               expect(body.ok).to.equal(true);
             });
         });
+
       });
 
       describe('Status 404 - Not Found', () => {
+
         it('/ - should return a Status 404 - Not Found with error msg if route is invalid', () => {
           return request
             .get('/api/topic')
@@ -37,13 +42,18 @@ describe.only('The API endpoint - /api', () => {
               expect(body.msg).to.eql('Route Not Found')
             });
         });
+
       });
     });
 
     describe('The topics endpoint - /api/topics', () => {
+
       describe('/', () => {
+
         describe('GET Request', () => {
+
           describe('Status 200 - OK', () => {
+
             it('/ - Responds with an array of topic objects', () => {
               return request
                 .get('/api/topics')
@@ -53,15 +63,20 @@ describe.only('The API endpoint - /api', () => {
                   expect(body.topics[0]).to.contain.keys('description', 'slug')
                 });
             });
+
           });
         });
       });
     });
 
     describe('The articles endpoint - /api/articles', () => {
+
       describe('/', () => {
+
         describe('GET Request', () => {
+
           describe('Status 200 - OK', () => {
+
             it(' / - Responds with an array of article objects with correct keys', () => {
               return request
                 .get('/api/articles')
@@ -88,8 +103,11 @@ describe.only('The API endpoint - /api', () => {
       })
 
       describe('/?', () => {
+
         describe('GET Request', () => {
+
           describe('Status 200 - OK', () => {
+
             it('/?author= - filters the articles by the username value', () => {
               return request
                 .get('/api/articles/?author=rogersop')
@@ -160,6 +178,7 @@ describe.only('The API endpoint - /api', () => {
           });
 
           describe('Status 404 - Not Found', () => {
+
             it('/?author= - should return 404 with message when passed invalid author query', () => {
               return request
                 .get('/api/articles/?author=a')
@@ -183,8 +202,11 @@ describe.only('The API endpoint - /api', () => {
       });
 
       describe('/:article_id', () => {
+
         describe('GET Request', () => {
+
           describe('Status 200 - OK', () => {
+
             it('/:article_id - should return a Status 200 - OK with an article when passed valid article id', () => {
               return request
                 .get('/api/articles/1')
@@ -193,10 +215,11 @@ describe.only('The API endpoint - /api', () => {
                   expect(body.article[0].title).to.eql('Living in the shadow of a great man')
                 });
             });
+
           });
 
-
           describe('Status 400 - Bad Request', () => {
+
             it('/:articleID - should return a Status 400 - Bad Request with error msg when passed invalid article_id', () => {
               return request
                 .get('/api/articles/a')
@@ -205,6 +228,7 @@ describe.only('The API endpoint - /api', () => {
                   expect(body.msg).to.eql('Invalid article ID')
                 });
             });
+
           });
 
           describe('Status 404 - Not Found', () => {
@@ -222,7 +246,9 @@ describe.only('The API endpoint - /api', () => {
         });
 
         describe('PATCH Request', () => {
+
           describe('Status 200 - OK', () => {
+
             it('/:article_id - Responds with the updated article', () => {
               const newVote = 0
               const vote = { inc_votes: newVote }
@@ -247,6 +273,7 @@ describe.only('The API endpoint - /api', () => {
                   expect(body.article.votes).to.eql(101)
                 })
             });
+
             it('/:article_id - Will decrement article vote by ninty-nine (as specified by request object)', () => {
               const newVote = -99
               const vote = { inc_votes: newVote }
@@ -258,24 +285,28 @@ describe.only('The API endpoint - /api', () => {
                   expect(body.article.votes).to.eql(1)
                 })
             });
+
           });
         });
       });
 
       describe('/:article_id/comments', () => {
+
         describe('GET Request', () => {
+
           describe('Status 200 - OK', () => {
+
             it('/ - Responds with an array of comments for the given article ID', () => {
               return request
                 .get('/api/articles/1/comments')
                 .expect(200)
                 .then(({ body }) => {
                   body.comments.forEach(comment => {
-                    console.log(comment)
                     expect(comment).to.contain.keys('comment_id', 'votes', 'created_at', 'author', 'body')
                   })
                 });
             })
+
             it('/ - Should be ordered by created_at as default', () => {
               return request
                 .get('/api/articles/1/comments')
@@ -284,30 +315,64 @@ describe.only('The API endpoint - /api', () => {
                   expect(body.comments).to.be.descendingBy('created_at')
                 });
             })
+
           });
         });
 
         describe('POST Request', () => {
+
           describe('Status 200 - OK', () => {
-            it.only('Request body accepts an object with "username" & "body" properties', () => {
+
+            it('/ - Request body accepts an object with "username" & "body" properties', () => {
               const newComment = { username: 'icellusedkars', body: 'hello' }
               return request
                 .post('/api/articles/1/comments')
                 .send(newComment)
                 .expect(200)
                 .then(({ body }) => {
-                  expect(body.comments).to.contain.keys('comment_id', 'votes', 'created_at', 'author', 'body')
-                  expect(body.comments.author).to.eql('icellusedkars')
-                  expect(body.comments.body).to.eql('hello')
+                  expect(body.postedComment).to.contain.keys('comment_id', 'votes', 'created_at', 'author', 'body', 'article_id')
+                  expect(body.postedComment.author).to.eql('icellusedkars')
+                  expect(body.postedComment.body).to.eql('hello')
                 })
             });
+
           });
 
+          describe('Status 400 - Bad Request', () => {
+
+            it('/ - should return a Status 400 - Bad Request with error msg when passed invalid new comment object body', () => {
+              const newComment = { username: 'icellusedkars', body: '' }
+              const bod = newComment.body
+              return request
+                .post('/api/articles/1/comments')
+                .send(newComment)
+                .expect(400)
+                .then(({ body }) => {
+                  expect(body.msg).to.eql('Unable to post - please provide a comment')
+                })
+            });
+
+            it('/ - should return a Status 400 - Bad Request with error msg when passed invalid new comment object username', () => {
+              const newComment = { username: '', body: 'hello' }
+              const bod = newComment.body
+              return request
+                .post('/api/articles/1/comments')
+                .send(newComment)
+                .expect(400)
+                .then(({ body }) => {
+                  expect(body.msg).to.eql('Please provide a username')
+                })
+            });
+
+          });
         });
 
         describe('/?', () => {
+
           describe('GET Request', () => {
+
             describe('Status 200 - OK', () => {
+
               it('/?sort_by= - sorts the comments by column when passed any valid column', () => {
                 return request
                   .get('/api/articles/1/comments/?sort_by=author')
@@ -325,6 +390,7 @@ describe.only('The API endpoint - /api', () => {
                     expect(body.comments).to.be.descendingBy('created_at')
                   });
               });
+
               it('/?order_by= - orders articles in ascending order', () => {
                 return request
                   .get('/api/articles/1/comments/?order_by=asc')
@@ -335,7 +401,9 @@ describe.only('The API endpoint - /api', () => {
               });
 
             });
+
             describe('Status 400 - Bad Request', () => {
+
               it('/?sort_by= - should return 400 with message when passed invalid sort_by query', () => {
                 return request
                   .get('/api/articles/1/comments/?sort_by=a')
@@ -344,6 +412,7 @@ describe.only('The API endpoint - /api', () => {
                     expect(body.msg).to.eql('Unable to sort by undefined column')
                   });
               });
+
               it('/?order_by= - should return 400 with message when passed invalid order_by query', () => {
                 return request
                   .get('/api/articles/1/comments/?order_by=a')
@@ -352,6 +421,7 @@ describe.only('The API endpoint - /api', () => {
                     expect(body.msg).to.eql('Invalid Request - please order_by asc or desc')
                   });
               });
+
             });
 
           });
@@ -360,6 +430,60 @@ describe.only('The API endpoint - /api', () => {
       });
 
     });
+
+    xdescribe('The comments endpoint - /api/comments', () => {
+
+      describe('/:comment_id', () => {
+
+        describe('PATCH Request', () => {
+
+          describe('Status 200 - OK', () => {
+
+            it('/:comment_id - Responds with the updated comment when passed newVote object', () => {
+              const newVote = 0
+              const vote = { inc_votes: newVote }
+              return request
+                .patch('/api/comments/1')
+                .send(vote)
+                .expect(200)
+                .then(({ body }) => {
+                  expect(body.article.votes).to.eql(0)
+                  expect(body.article).to.contain.keys('comment_id', 'author', 'article_id', 'votes', 'created_at', 'body')
+                })
+            });
+
+            xit('/:comment_id - Will increment comment vote by one (as specified by request object)', () => {
+              const newVote = 1
+              const vote = { inc_votes: newVote }
+              return request
+                .patch('/api/comments/1')
+                .send(vote)
+                .expect(200)
+                .then(({ body }) => {
+                  expect(body.article.votes).to.eql(1)
+                })
+            });
+
+            xit('/:comment_id - Will decrement comment vote by one (as specified by request object)', () => {
+              const newVote = -1
+              const vote = { inc_votes: newVote }
+              return request
+                .patch('/api/comments/1')
+                .send(vote)
+                .expect(200)
+                .then(({ body }) => {
+                  expect(body.article.votes).to.eql(-1)
+                })
+            });
+
+          });
+
+        });
+
+      });
+
+    });
+
   });
 });
 
