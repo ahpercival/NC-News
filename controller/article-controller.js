@@ -33,6 +33,8 @@ const getArticleByID = (req, res, next) => {
 }
 
 const patchArticleVote = (req, res, next) => {
+    if (typeof req.body.inc_votes !== 'number') { return next({ code: '4006' }) }
+
     updateArticleVote(req.params, req.body).then(article => {
         res.status(200).send({ article });
     })

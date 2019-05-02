@@ -287,6 +287,23 @@ describe.only('The API endpoint - /api', () => {
             });
 
           });
+
+          describe('Status 400 - Bad Request', () => {
+
+            it('/:article_id - should return 400 with message when passed invalid vote', () => {
+              const newVote = 'a'
+              const vote = { inc_votes: newVote }
+              return request
+                .patch('/api/articles/1')
+                .send(vote)
+                .expect(400)
+                .then(({ body }) => {
+                  expect(body.msg).to.eql('Unable to process vote request')
+                })
+            });
+
+          });
+
         });
       });
 
@@ -473,6 +490,50 @@ describe.only('The API endpoint - /api', () => {
                 .expect(200)
                 .then(({ body }) => {
                   expect(body.comment.votes).to.eql(15)
+                })
+            });
+
+          });
+
+          describe('Status 400 - Bad Request', () => {
+
+            it('/:comment_id - should return 400 with message when passed invalid vote', () => {
+              const newVote = 'a'
+              const vote = { inc_votes: newVote }
+              return request
+                .patch('/api/comments/1')
+                .send(vote)
+                .expect(400)
+                .then(({ body }) => {
+                  expect(body.msg).to.eql('Unable to process vote request')
+                })
+            });
+
+          });
+
+          describe('Status 404 - Not Found', () => {
+
+            it('/:comment_id - should return a Status 404 - Not Found with error msg if comment does not exist', () => {
+              const newVote = 1
+              const vote = { inc_votes: newVote }
+              return request
+                .patch('/api/comments/1000')
+                .send(vote)
+                .expect(404)
+                .then(({ body }) => {
+                  expect(body.msg).to.eql('No comment found')
+                })
+            });
+
+            it('/:comment_id - should return a Status 404 - Not Found with error msg if passed bad article route', () => {
+              const newVote = 1
+              const vote = { inc_votes: newVote }
+              return request
+                .patch('/api/comments/a')
+                .send(vote)
+                .expect(404)
+                .then(({ body }) => {
+                  expect(body.msg).to.eql('No comment found')
                 })
             });
 
