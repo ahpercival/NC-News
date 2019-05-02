@@ -521,7 +521,7 @@ describe.only('The API endpoint - /api', () => {
                 .send(vote)
                 .expect(404)
                 .then(({ body }) => {
-                  expect(body.msg).to.eql('No comment found')
+                  expect(body.msg).to.eql('Comment Not Found')
                 })
             });
 
@@ -533,8 +533,24 @@ describe.only('The API endpoint - /api', () => {
                 .send(vote)
                 .expect(404)
                 .then(({ body }) => {
-                  expect(body.msg).to.eql('No comment found')
+                  expect(body.msg).to.eql('Comment Not Found')
                 })
+            });
+
+          });
+
+        });
+
+        describe('DELETE Request', () => {
+
+          describe('Status 204 - No Content', () => {
+
+            it('/:comment_id - Should delete the given comment by comment_id', () => {
+
+              return request
+                .delete('/api/comments/1')
+                .expect(204)
+
             });
 
           });
@@ -546,7 +562,9 @@ describe.only('The API endpoint - /api', () => {
     });
 
   });
+
 });
+
 
 
 

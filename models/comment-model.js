@@ -9,3 +9,10 @@ exports.addVoteToComment = (commentToUpdate, newVote) => {
         .then(([result]) => result)
 
 }
+
+
+exports.removeComment = (commentToDelete) => {
+    return connection("comments")
+        .where("comment_id", "=", commentToDelete.comment_id)
+        .del();
+}

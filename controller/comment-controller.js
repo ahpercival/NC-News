@@ -1,4 +1,4 @@
-const { addVoteToComment } = require('../models/comment-model')
+const { addVoteToComment, removeComment } = require('../models/comment-model')
 
 const patchCommentVote = (req, res, next) => {
 
@@ -11,7 +11,16 @@ const patchCommentVote = (req, res, next) => {
             if (comment === undefined) { return next({ code: '4044' }) }
             res.status(200).send({ comment })
         })
+        .catch(next);
 }
 
+const deleteComment = (req, res, next) => {
 
-module.exports = { patchCommentVote }
+    removeComment(req.params)
+        .then(() => {
+            res.status(204).send();
+        })
+        .catch(next);
+}
+
+module.exports = { patchCommentVote, deleteComment }
