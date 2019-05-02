@@ -431,7 +431,7 @@ describe.only('The API endpoint - /api', () => {
 
     });
 
-    xdescribe('The comments endpoint - /api/comments', () => {
+    describe('The comments endpoint - /api/comments', () => {
 
       describe('/:comment_id', () => {
 
@@ -447,12 +447,12 @@ describe.only('The API endpoint - /api', () => {
                 .send(vote)
                 .expect(200)
                 .then(({ body }) => {
-                  expect(body.article.votes).to.eql(0)
-                  expect(body.article).to.contain.keys('comment_id', 'author', 'article_id', 'votes', 'created_at', 'body')
+                  expect(body.comment.votes).to.eql(16)
+                  expect(body.comment).to.contain.keys('comment_id', 'author', 'article_id', 'votes', 'created_at', 'body')
                 })
             });
 
-            xit('/:comment_id - Will increment comment vote by one (as specified by request object)', () => {
+            it('/:comment_id - Will increment comment vote by one (as specified by request object)', () => {
               const newVote = 1
               const vote = { inc_votes: newVote }
               return request
@@ -460,11 +460,11 @@ describe.only('The API endpoint - /api', () => {
                 .send(vote)
                 .expect(200)
                 .then(({ body }) => {
-                  expect(body.article.votes).to.eql(1)
+                  expect(body.comment.votes).to.eql(17)
                 })
             });
 
-            xit('/:comment_id - Will decrement comment vote by one (as specified by request object)', () => {
+            it('/:comment_id - Will decrement comment vote by one (as specified by request object)', () => {
               const newVote = -1
               const vote = { inc_votes: newVote }
               return request
@@ -472,7 +472,7 @@ describe.only('The API endpoint - /api', () => {
                 .send(vote)
                 .expect(200)
                 .then(({ body }) => {
-                  expect(body.article.votes).to.eql(-1)
+                  expect(body.comment.votes).to.eql(15)
                 })
             });
 
