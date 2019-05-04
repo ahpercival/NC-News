@@ -561,6 +561,33 @@ describe.only('The API endpoint - /api', () => {
 
     });
 
+    describe.only('The User Endpoint - /api/users/', () => {
+
+      describe('/:username', () => {
+
+        describe('GET Request', () => {
+
+          describe('Status 200 - OK', () => {
+
+            it('/ - Responds with a user object', () => {
+
+              return request
+                .get('/api/users/butter_bridge')
+                .expect(200)
+                .then(({ body }) => {
+                  expect(body.user).to.contain.keys('username', 'avatar_url', 'name')
+                });
+
+            });
+
+          });
+
+        });
+
+      });
+
+    });
+
   });
 
 });
