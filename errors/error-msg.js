@@ -12,7 +12,8 @@ module.exports = {
         4041: 'No article found',
         4042: 'No articles found by that author',
         4043: 'No articles found relating to that topic',
-        4044: 'Comment Not Found'
+        4044: 'Comment Not Found',
+        4045: 'User not found'
     },
 
     PSQL: {

@@ -561,7 +561,7 @@ describe.only('The API endpoint - /api', () => {
 
     });
 
-    describe.only('The User Endpoint - /api/users/', () => {
+    describe('The user endpoint - /api/users/', () => {
 
       describe('/:username', () => {
 
@@ -579,6 +579,20 @@ describe.only('The API endpoint - /api', () => {
                 });
 
             });
+
+          });
+
+          describe('Status 404 - Not Found', () => {
+
+            it('/ - should return a Status 404 - Not Found with error msg when passed invalid username', () => {
+              return request
+                .get('/api/users/a')
+                .expect(404)
+                .then(({ body }) => {
+                  expect(body.msg).to.eql('User not found')
+                });
+            });
+
 
           });
 
